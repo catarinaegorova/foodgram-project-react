@@ -2,10 +2,15 @@ import os
 from pathlib import Path
 
 from dotenv import load_dotenv
+import dotenv
 
 load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+dotenv_path = dotenv.find_dotenv('../../infra/.env')
+if dotenv_path:
+    dotenv.load_dotenv(dotenv_path)
 
 SECRET_KEY = 'django-insecure-m1$)tkh0lt31_8ugze!e#3nb2ps*6xeb#qo%rzyx8ejp5hrbe2'
 
@@ -64,8 +69,12 @@ WSGI_APPLICATION = 'foodgram.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': os.getenv('DB_ENGINE', default='django.db.backends.postgresql'),
+        'NAME': os.getenv('DB_NAME', default='default'),
+        'USER': os.getenv('POSTGRES_USER', default='default'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD', default='default'),
+        'HOST': os.getenv('DB_HOST', default='localhost'),
+        'PORT': os.getenv('DB_PORT', default='5432')
     }
 }
 

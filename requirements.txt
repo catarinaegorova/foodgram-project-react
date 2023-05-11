@@ -13,11 +13,17 @@ docker==6.0.1
 docker-compose==1.29.2
 dockerpty==0.4.1
 docopt==0.6.2
+drf-extra-fields-3.4.1
+djangorestframework-3.14.0
+django-filter-23.2
+djoser-2.2.0
 idna==3.4
 importlib-metadata==6.6.0
 jsonschema==3.2.0
 packaging==23.1
 paramiko==3.1.0
+pillow-9.5.0
+psycopg2-2.9.6
 pycparser==2.21
 PyNaCl==1.5.0
 pyrsistent==0.19.3
@@ -32,4 +38,5 @@ texttable==1.6.7
 typing_extensions==4.5.0
 urllib3==1.26.15
 websocket-client==0.59.0
+wheel-0.40.0
 zipp==3.15.0
