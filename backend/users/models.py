@@ -4,38 +4,20 @@ from django.db.models import UniqueConstraint
 
 
 class User(AbstractUser):
-    username = models.CharField(
-        verbose_name='Имя пользователя',
-        max_length=150,
-        unique=True,
-        blank=False
-    )
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = [
+        'username',
+        'first_name',
+        'last_name',
+    ]
     email = models.EmailField(
-        verbose_name='Адрес электронной почты',
         max_length=254,
         unique=True,
-        blank=False,
-        null=False,
+        verbose_name='Электронная почта',
     )
-    first_name = models.CharField(
-        verbose_name='Имя',
-        max_length=150,
-        blank=False
-    )
-    last_name = models.CharField(
-        verbose_name='Фамилия',
-        max_length=150,
-        blank=False
-    )
-    is_subscribed = models.BooleanField(
-        default=False,
-        verbose_name='Подписка на данного пользователя',
-    )
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username', 'first_name', 'last_name', 'password']
 
     class Meta:
-        ordering = ['pk']
+        ordering = ['id']
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
 
@@ -44,22 +26,21 @@ class User(AbstractUser):
 
 
 class Subscription(models.Model):
-
     user = models.ForeignKey(
         User,
         related_name='subscriber',
-        verbose_name="Подписчик",
         on_delete=models.CASCADE,
+        verbose_name='Подписчик',
     )
     author = models.ForeignKey(
         User,
         related_name='subscribing',
-        verbose_name="Автор",
         on_delete=models.CASCADE,
+        verbose_name='Автор',
     )
 
     class Meta:
-        ordering = ['-pk']
+        ordering = ['-id']
         constraints = [
             UniqueConstraint(
                 fields=['user', 'author'],
@@ -68,6 +49,3 @@ class Subscription(models.Model):
         ]
         verbose_name = 'Подписка'
         verbose_name_plural = 'Подписки'
-
-    def __str__(self):
-        return f'{self.user} подписан на {self.author}'

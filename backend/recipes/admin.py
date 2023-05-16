@@ -2,13 +2,8 @@ from django.contrib import admin
 from django.contrib.admin import display
 
 from .models import (
-    Favourite,
-    Ingredient,
-    IngredientInRecipe,
-    Recipe,
-    ShoppingCart,
-    Tag,
-    TagInRecipe,
+    Favourite, Ingredient, IngredientInRecipe,
+    Recipe, ShoppingCart, Tag, TagInRecipe
 )
 
 
@@ -29,21 +24,32 @@ class RecipeAdmin(admin.ModelAdmin):
 class IngredientAdmin(admin.ModelAdmin):
     list_display = ('name', 'measurement_unit',)
     list_filter = ('name',)
+    search_fields = ('name',)
+    empty_value_display = '-пусто-'
 
 
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
     list_display = ('name', 'color', 'slug',)
+    list_filter = ('name',)
+    search_fields = ('name',)
+    empty_value_display = '-пусто-'
 
 
 @admin.register(ShoppingCart)
 class ShoppingCartAdmin(admin.ModelAdmin):
     list_display = ('user', 'recipe',)
+    list_filter = ('user',)
+    search_fields = ('user',)
+    empty_value_display = '-пусто-'
 
 
 @admin.register(Favourite)
 class FavouriteAdmin(admin.ModelAdmin):
     list_display = ('user', 'recipe',)
+    list_filter = ('user',)
+    search_fields = ('user',)
+    empty_value_display = '-пусто-'
 
 
 @admin.register(IngredientInRecipe)

@@ -13,14 +13,9 @@ class UserAdmin(UserAdmin):
         'first_name',
         'last_name',
     )
-    list_filter = ('email', 'username')
-    search_fields = ('username', 'email')
-    empty_value_display = '-пусто-'
+    list_filter = ('email', 'first_name')
 
 
 @admin.register(Subscription)
 class SubscribeAdmin(admin.ModelAdmin):
     list_display = ('user', 'author',)
-    search_fields = ('user', )
-    empty_value_display = '-пусто-'
-    list_filter = ('user',)
