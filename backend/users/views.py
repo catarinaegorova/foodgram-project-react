@@ -6,9 +6,9 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from djoser.views import UserViewSet
 
-from .models import Subscription
 from api.pagination import CustomPagination
 from api.serializers import CustomUserSerializer, SubscribeSerializer
+from .models import Subscription
 
 User = get_user_model()
 
@@ -37,15 +37,13 @@ class CustomUserViewSet(UserViewSet):
             serializer.is_valid(raise_exception=True)
             Subscription.objects.create(user=user, author=author)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-        if request.method == 'DELETE':
-            subscription = get_object_or_404(
+        subscription = get_object_or_404(
                 Subscription,
                 user=user,
                 author=author
             )
-            subscription.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
+        subscription.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(
         detail=False,

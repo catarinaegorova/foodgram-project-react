@@ -240,7 +240,6 @@ class RecipeWriteSerializer(ModelSerializer):
             recipe=instance,
             ingredients=ingredients
         )
-        instance.save()
         return instance
 
     def to_representation(self, instance):

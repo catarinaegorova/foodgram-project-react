@@ -12,7 +12,7 @@ dotenv_path = dotenv.find_dotenv('../../infra/.env')
 if dotenv_path:
     dotenv.load_dotenv(dotenv_path)
 
-SECRET_KEY = 'django-insecure-m1$)tkh0lt31_8ugze!e#3nb2ps*6xeb#qo%rzyx8ejp5hrbe2'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 DEBUG = True
 
@@ -25,13 +25,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'django_filters',
+    'djoser',
     'users.apps.UsersConfig',
     'recipes.apps.RecipesConfig',
     'api.apps.ApiConfig',
-    'rest_framework',
-    'rest_framework.authtoken',
-    'djoser',
-    'django_filters',
 ]
 
 MIDDLEWARE = [
@@ -99,10 +99,11 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny',
     ],
-
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
     ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 6,
 }
 
 DJOSER = {
