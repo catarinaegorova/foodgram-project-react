@@ -13,7 +13,7 @@ from .models import Subscription
 User = get_user_model()
 
 
-class CustomUserViewSet(UserViewSet):
+class SubscriptionsHandlingUserViewSet(UserViewSet):
     queryset = User.objects.all()
     serializer_class = CustomUserSerializer
     pagination_class = CustomPagination

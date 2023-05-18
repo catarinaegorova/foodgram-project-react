@@ -291,7 +291,7 @@ python manage.py createsuperuser
 9. Загрузите тестовые данные:
 
 ```
-python manage.py import_ingredients
+python manage.py loaddata ingredients.json
 ```
 
 10. Запустите бекэнд сервер:

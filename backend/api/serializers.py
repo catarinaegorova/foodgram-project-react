@@ -15,7 +15,7 @@ from users.models import Subscription
 User = get_user_model()
 
 
-class CustomUserCreateSerializer(UserCreateSerializer):
+class UserWithPasswordCreateSerializer(UserCreateSerializer):
     class Meta:
         model = User
         fields = tuple(User.REQUIRED_FIELDS) + (
