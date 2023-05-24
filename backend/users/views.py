@@ -38,10 +38,10 @@ class SubscriptionsHandlingUserViewSet(UserViewSet):
             Subscription.objects.create(user=user, author=author)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         subscription = get_object_or_404(
-                Subscription,
-                user=user,
-                author=author
-            )
+            Subscription,
+            user=user,
+            author=author
+        )
         subscription.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 

@@ -2,6 +2,7 @@ from datetime import datetime
 
 from django.shortcuts import HttpResponse
 
+
 def ingredients_export(self, request, ingredients):
     user = request.user
     filename = f'{user.username}_shopping_list.txt'
@@ -20,4 +21,3 @@ def ingredients_export(self, request, ingredients):
     response = HttpResponse(shopping_list, content_type='text/plain')
     response['Content-Disposition'] = f'attachment; filename={filename}'
     return response
-
