@@ -6,8 +6,9 @@
 
 # Структура проекта
 - frontend - файлы, необходимые для сборки фронтенда приложения;
-- infra — инфраструктура проекта: конфигурационный файл nginx и docker-compose.yml;
+- infra - инфраструктура проекта: конфигурационный файл nginx и docker-compose.yml;
 - backend - файлы, необходимые для сборки бэкенд приложения;
+- data - подготовлен список ингредиентов с единицами измерения. Экспорт ингредиентов осуществляется командой ```python manage.py loaddata ingredients.json```
 
 # Пользовательские роли 
 - Анонимный пользователь
@@ -203,103 +204,97 @@ pip install -r requirements.txt
 
 4. Создайте фаил .env в директории проекта 'infra':
 ```
+SECRET_KEY = 'secret key used in production'
 DB_ENGINE=django.db.backends.postgresql
 DB_NAME=postgres
 POSTGRES_USER=postgres
 POSTGRES_PASSWORD=postgres
-DB_HOST=localhost
+DB_HOST=db
 DB_PORT=5432
 ```
-5. Примените следующие настройки для 'docker-compose.yml':
+5. Перейдите в папку 'infra-local' и выполните команду сборки контейнеров:
 ```
-version: '3.3'
-services:
-  db:
-    image: postgres:14-alpine
-    env_file:
-      - .env
-    ports:
-      - 5432:5432 # открываем порты наружу
-    volumes:
-      - db_data:/var/lib/postgresql/data/
-  frontend:
-    build:
-      context: ../frontend
-      dockerfile: Dockerfile
-    volumes:
-      - ../frontend/:/app/result_build/
-  nginx:
-    image: nginx:1.19.3
-    ports:
-      - "80:80"
-    volumes:
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf
-      - ../frontend/build:/usr/share/nginx/html/
-      - ../docs/:/usr/share/nginx/html/api/docs/
-volumes:
-  db_data:
+cd infra/
+docker compose up -d
 ```
-6. Примените следующие настройки для 'nginx.conf':
+6. Выполните миграции, создайте суперпользователя и соберите статику:
 ```
-server {
-    listen 80;
-    location /api/ {
-        proxy_pass http://host.docker.internal:8000; # эта настройка позволяет обращаться по адресу localhost
-    }
-    location /admin/ {
-        proxy_pass http://host.docker.internal:8000/admin/;
-    }
-    location /api/docs/ {
-        root /usr/share/nginx/html;
-        try_files $uri $uri/redoc.html $uri/swagger.html;
-    }
-    location / {
-        root /usr/share/nginx/html;
-        index  index.html index.htm;
-        try_files $uri /index.html;
-        proxy_set_header        Host $host;
-        proxy_set_header        X-Real-IP $remote_addr;
-        proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header        X-Forwarded-Proto $scheme;
-      }
-      error_page   500 502 503 504  /50x.html;
-      location = /50x.html {
-        root   /var/html/frontend/;
-      }
-}
+docker compose exec backend python manage.py makemigrations
+docker compose exec backend python manage.py migrate
+docker compose exec backend python manage.py createsuperuser
+docker compose exec backend python manage.py collectstatic --no-input
 ```
-7. Перейдите в папку 'infra-Dev' и выполните команду сборки контейнеров:
+Проект станет доступен для работы:
+
+- Документация API: http://localhost/api/docs/redoc.html
+- Панель администратора: http://localhost/admin/
+- Главная страница сайта: http://localhost/recipes
+
+7. При необходимости, выполните импорт ингредиентов:
 ```
-cd infra-Dev/
-```
-```
-docker compose up
+docker compose exec backend python manage.py loaddata ingredients.json
 ```
 
-Выполните миграции:
-```
-python manage.py makemigrations
-```
-```
-python manage.py migrate
-```
-8. Создайте учетную запись администратора:
-```
-python manage.py createsuperuser
-```
-
-9. Загрузите тестовые данные:
+## Запуск проекта на сервере (через Docker контейнеры)
+1. Скопируйте репозиторий и перейдите в него в командной строке:
 
 ```
-python manage.py loaddata ingredients.json
+git clone git@github.com:catarinaegorova/foodgram-project-react.git
 ```
 
-10. Запустите бекэнд сервер:
-
 ```
-python manage.py runserver
+cd foodgram-project-react
 ```
 
-11. Откройте вебсайт в браузере и начните работу с сайтом:
+2. Создайте и активируйте виртуальное окружение:
+
 ```
-http://localhost/signin
+python -m venv env
+```
+
+```
+source env/bin/activate
+```
+
+3. Установите зависимости из файла requirements.txt:
+
+```
+python -m pip install --upgrade pip
+```
+
+```
+pip install -r requirements.txt
+```
+
+4. Создайте фаил .env в директории проекта 'infra':
+```
+SECRET_KEY = 'secret key used in production'
+DB_ENGINE=django.db.backends.postgresql
+DB_NAME=postgres
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+DB_HOST=db
+DB_PORT=5432
+```
+5. Перейдите в папку 'infra-local' и выполните команду сборки контейнеров:
+```
+cd infra/
+docker compose up -d
+```
+6. Выполните миграции, создайте суперпользователя и соберите статику:
+```
+docker compose exec backend python manage.py makemigrations
+docker compose exec backend python manage.py migrate
+docker compose exec backend python manage.py createsuperuser
+docker compose exec backend python manage.py collectstatic --no-input
+```
+Проект станет доступен для работы:
+
+- Документация API: http://localhost/api/docs/redoc.html
+- Панель администратора: http://localhost/admin/
+- Главная страница сайта: http://localhost/recipes
+
+7. При необходимости, выполните импорт ингредиентов:
+```
+docker compose exec backend python manage.py loaddata ingredients.json
+```
