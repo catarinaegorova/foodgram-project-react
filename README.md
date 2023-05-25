@@ -317,6 +317,8 @@ sudo docker compose exec backend python manage.py loaddata ingredients.json
 
 Сайт станет доступным для работы:
 
-Документация API: http://158.160.42.251/api/docs/redoc.html
-Панель администратора: http://158.160.42.251/admin
-Главная страница сайта: http://158.160.42.251/recipes
+- Документация API: http://158.160.42.251/api/docs/redoc.html
+- Панель администратора: http://158.160.42.251/admin
+- Главная страница сайта: http://158.160.42.251/recipes
+
+Наслаждайтесь невероятными рецептами из солнечной Бразилии!
