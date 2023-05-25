@@ -236,6 +236,8 @@ docker compose exec backend python manage.py loaddata ingredients.json
 ```
 
 ## Запуск проекта на сервере (через Docker контейнеры)
+VM (Ubuntu 22.04) для Docker Compose V2:
+
 1. Скопируйте репозиторий и перейдите в него в командной строке:
 
 ```
