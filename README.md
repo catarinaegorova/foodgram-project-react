@@ -1,6 +1,8 @@
 # Проект Foodgram - ваш продуктовый помощник
 
-Пользователи Foodgram могут публиковать свои любимые рецепты, подписываться на публикации других пользователей, добавлять понравившиеся рецепты в список «Избранное», а перед походом в магазин скачивать сводный список продуктов, необходимых для приготовления одного или нескольких выбранных блюд.
+![Foodgram workflow](https://github.com/catarinaegorova/foodgram-project-react/actions/workflows/foodgram.yml/badge.svg)
+
+Пользователи Foodgram могут публиковать свои любимые рецепты, подписываться на публикации других пользователей, добавлять понравившиеся  в список «Избранное», а перед походом в магазин скачивать сводный список продуктов, необходимых для приготовления одного или нескольких выбранных блюд.
 
 Для удобства навигации по сайту рецепты размечены тэгами.
 
@@ -43,6 +45,9 @@
 ### Документация
 
 В документации указаны эндпоинты (адреса, по которым можно сделать запрос), разрешённые типы запросов, права доступа и дополнительные параметры (паджинация, поиск, фильтрация итд.), когда это необходимо.
+
+Документация доступна по адресу: 
+http://158.160.42.251/api/docs/redoc.html
 
 ### Примеры запросов
 
@@ -229,7 +234,7 @@ docker compose exec backend python manage.py collectstatic --no-input
 - Панель администратора: http://localhost/admin/
 - Главная страница сайта: http://localhost/recipes
 
-7. При необходимости, выполните импорт ингредиентов:
+7. Выполните импорт ингредиентов:
 ```
 docker compose exec backend python manage.py loaddata ingredients.json
 ```
@@ -256,9 +261,7 @@ sudo apt upgrade -y
 sudo apt install docker.io
 
 sudo mkdir -p /usr/local/lib/docker/cli-plugins
-
 sudo curl -SL https://github.com/docker/compose/releases/download/v2.17.2/docker-compose-linux-x86_64 -o /usr/local/lib/docker/cli-plugins/docker-compose
-
 sudo chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
 ```
 
@@ -294,15 +297,15 @@ DB_PORT                 # 5432 (порт по умолчанию)
 
 7. После успешного запуска контейнеров выполните
 ```
-docker compose exec backend python manage.py makemigrations
-docker compose exec backend python manage.py migrate
-docker compose exec backend python manage.py createsuperuser
-docker compose exec backend python manage.py collectstatic --no-input
+sudo docker compose exec backend python manage.py makemigrations
+sudo docker compose exec backend python manage.py migrate
+sudo docker compose exec backend python manage.py createsuperuser
+sudo docker compose exec backend python manage.py collectstatic --no-input
 ```
 
 8. Выполните импорт ингредиентов:
 ```
-docker compose exec backend python manage.py loaddata ingredients.json
+sudo docker compose exec backend python manage.py loaddata ingredients.json
 ```
 
 ## Github Actions CI:
@@ -312,7 +315,7 @@ docker compose exec backend python manage.py loaddata ingredients.json
 3. Разворачивание проекта на удаленном сервере
 4. Отправка сообщения в Telegram в случае успеха
 
-Сайт станет доступным для работы (адрес сервера дан для примера):
+Сайт станет доступным для работы:
 
 Документация API: http://158.160.42.251/api/docs/redoc.html
 Панель администратора: http://158.160.42.251/admin
