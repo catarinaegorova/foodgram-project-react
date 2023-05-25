@@ -238,20 +238,17 @@ docker compose exec backend python manage.py loaddata ingredients.json
 ## Запуск проекта на сервере (через Docker контейнеры)
 VM (Ubuntu 22.04) для Docker Compose V2:
 
-1. Скопируйте репозиторий и перейдите в него в командной строке:
+1. Остановите работу nginx, если он у вас установлен и запущен
 
 ```
-git clone git@github.com:catarinaegorova/foodgram-project-react.git
+sudo systemctl stop nginx
 ```
 
-```
-cd foodgram-project-react
-```
-
-2. Создайте и активируйте виртуальное окружение:
+2. Установите последние обновления на виртуальную машину:
 
 ```
-python -m venv env
+sudo apt update
+sudo apt upgrade -y
 ```
 
 ```
