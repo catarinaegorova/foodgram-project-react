@@ -202,7 +202,7 @@ python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-4. Создайте фаил .env в директории проекта 'infra':
+4. Создайте фаил .env в директории проекта 'infra-local':
 ```
 SECRET_KEY = 'secret key used in production'
 DB_ENGINE=django.db.backends.postgresql
@@ -212,9 +212,8 @@ POSTGRES_PASSWORD=postgres
 DB_HOST=db
 DB_PORT=5432
 ```
-5. Перейдите в папку 'infra-local' и выполните команду сборки контейнеров:
+5. В этой же директории выполните команду сборки контейнеров:
 ```
-cd infra/
 docker compose up -d
 ```
 6. Выполните миграции, создайте суперпользователя и соберите статику:
@@ -224,7 +223,7 @@ docker compose exec backend python manage.py migrate
 docker compose exec backend python manage.py createsuperuser
 docker compose exec backend python manage.py collectstatic --no-input
 ```
-Проект станет доступен для работы:
+Сайт станет доступен для работы:
 
 - Документация API: http://localhost/api/docs/redoc.html
 - Панель администратора: http://localhost/admin/
@@ -251,49 +250,70 @@ sudo apt update
 sudo apt upgrade -y
 ```
 
-```
-source env/bin/activate
-```
-
-3. Установите зависимости из файла requirements.txt:
+3. Установите Docker Docker Compose V2
 
 ```
-python -m pip install --upgrade pip
+sudo apt install docker.io
+
+sudo mkdir -p /usr/local/lib/docker/cli-plugins
+
+sudo curl -SL https://github.com/docker/compose/releases/download/v2.17.2/docker-compose-linux-x86_64 -o /usr/local/lib/docker/cli-plugins/docker-compose
+
+sudo chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
 ```
 
+## Подготовка сервера для запуска проекта:
+
+- Укажите публичный адрес вашего сервера в nginx.conf
 ```
-pip install -r requirements.txt
+server_name <ip вашего сервера>;
+```
+5. Скопируйте на сервер файлы docker-compose.yml, nginx.conf из папки infra-server (команды выполнять находясь в папке infra-server):
+```
+scp docker-compose.yml nginx.conf username@IP:/home/username/
+```
+6. Для работы с GitHub Actions и деплоя необходимо в репозитории в разделе Secrets > Actions создать переменные окружения:
+```
+SECRET_KEY              # секретный ключ Django проекта
+DOCKER_PASSWORD         # пароль от Docker Hub
+DOCKER_USERNAME         # логин Docker Hub
+HOST                    # публичный IP сервера
+USER                    # имя пользователя на сервере
+PASSPHRASE              # *если ssh-ключ защищен паролем
+SSH_KEY                 # приватный ssh-ключ
+TELEGRAM_TO             # ID телеграм-аккаунта для посылки сообщения
+TELEGRAM_TOKEN          # токен бота, посылающего сообщение
+
+DB_ENGINE               # django.db.backends.postgresql
+DB_NAME                 # postgres
+POSTGRES_USER           # postgres
+POSTGRES_PASSWORD       # postgres
+DB_HOST                 # db
+DB_PORT                 # 5432 (порт по умолчанию)
 ```
 
-4. Создайте фаил .env в директории проекта 'infra':
-```
-SECRET_KEY = 'secret key used in production'
-DB_ENGINE=django.db.backends.postgresql
-DB_NAME=postgres
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=postgres
-DB_HOST=db
-DB_PORT=5432
-```
-5. Перейдите в папку 'infra-local' и выполните команду сборки контейнеров:
-```
-cd infra/
-docker compose up -d
-```
-6. Выполните миграции, создайте суперпользователя и соберите статику:
+7. После успешного запуска контейнеров выполните
 ```
 docker compose exec backend python manage.py makemigrations
 docker compose exec backend python manage.py migrate
 docker compose exec backend python manage.py createsuperuser
 docker compose exec backend python manage.py collectstatic --no-input
 ```
-Проект станет доступен для работы:
 
-- Документация API: http://localhost/api/docs/redoc.html
-- Панель администратора: http://localhost/admin/
-- Главная страница сайта: http://localhost/recipes
-
-7. При необходимости, выполните импорт ингредиентов:
+8. Выполните импорт ингредиентов:
 ```
 docker compose exec backend python manage.py loaddata ingredients.json
 ```
+
+## Github Actions CI:
+После каждого обновления репозитория (push в ветку master) будет происходить:
+1. Проверка кода на соответствие стандарту PEP8 (с помощью пакета flake8)
+2. Сборка и доставка докер-образов frontend и backend на Docker Hub
+3. Разворачивание проекта на удаленном сервере
+4. Отправка сообщения в Telegram в случае успеха
+
+Сайт станет доступным для работы (адрес сервера дан для примера):
+
+Документация API: http://158.160.42.251/api/docs/redoc.html
+Панель администратора: http://158.160.42.251/admin
+Главная страница сайта: http://158.160.42.251/recipes
